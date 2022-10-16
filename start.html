@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Todos</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body onload="firstFunction()">
+
+<h3 class="text-center">Todos and Info</h3>   
+
+<div class="container">
+  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#createBagModal">Create Bag</button>
+
+  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#createContentModal">Create Content</button>
+
+  <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteBagModal">Delete Bag</button>
+</div>
+<hr>
+<div class="container-fluid">
+    <div class="d-flex align-items-start">
+        <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+        </div>
+
+        <div class="tab-content" id="v-pills-tabContent">
+        </div>
+
+      </div>   
+</div>
+       
+
+<!-- ---------------------- Modals To Create Bag ------------------------- -->
+
+<div class="container">
+  <div class="modal fade" id="createBagModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Bag</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+                <label for="exampleFormControlInput1" class="form-label">Enter Name</label>
+                <input type="email" class="form-control" id="bagName">
+              </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" id="createBag">Create</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
+
+
+<!-- ---------------- Modal Create Content  ------------------->
+<div class="container">
+    <div class="modal fade" id="createContentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Create Content</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="mb-3">
+                  <label for="header" class="form-label">Header</label>
+                  <input type="email" class="form-control" id="header">
+                </div>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="content" class="form-label">Content</label>
+              <textarea class="form-control" id="content" rows="5"></textarea>
+            </div>
+          </div>
+
+          <div class="modal-body">
+          <select class="form-select" aria-label="Default select example" id="selectBag">
+          </select>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="createContent">Create</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+<!-- --------------------------------- Delete Bag Modal ------------------ -->
+
+<div class="container">
+  <div class="modal fade" id="deleteBagModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Delete Bag</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+       
+        <div class="modal-body">
+          <div class="mb-3" id="deleteBags">
+            <!-- <label for="content" class="form-label">Click</label> -->
+            <!-- <textarea class="form-control" id="content" rows="15"></textarea> -->
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <!-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> -->
+          <!-- <button type="button" class="btn btn-primary" id="createContent">Create</button> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+</body>
+<script>
+
+
+document.getElementById("createBag").addEventListener('click',function(){
+      
+    let bagName = document.getElementById('bagName').value
+    let str = Date.now().toString()
+    let bagId = str.slice(str.length-6, str.length);
+  
+    let bagArray = {}
+    bagArray['bag_id'] = bagId
+    bagArray['bag_name'] = bagName
+
+    bags = localStorage.getItem("bags");
+
+     if(bags==null){
+        bags = []
+     }
+     else{
+        bags = JSON.parse(bags);
+     }
+    
+     bags.push(bagArray)
+     bagData = JSON.stringify(bags)
+     localStorage.setItem("bags", bagData);
+     location.reload()
+})
+
+
+
+document.getElementById('createContent').addEventListener('click',function(){
+      
+      let str = Date.now().toString()
+
+      let contentId = str.slice(str.length-6, str.length);
+      let header = document.getElementById('header').value
+      let content = document.getElementById('content').value
+      let selectedBagId = document.getElementById('selectBag').value
+
+      let contentArray = {}
+      contentArray['content_id'] = contentId
+      contentArray['header'] = header
+      contentArray['content'] = content
+      contentArray['bag_id'] = selectedBagId
+
+      bag_content = localStorage.getItem("bag_content");
+
+      if(bag_content==null){
+        bag_content = []
+      }
+      else{
+        bag_content = JSON.parse(bag_content);
+      }
+
+      bag_content.push(contentArray)
+      bagContentData = JSON.stringify(bag_content)
+     localStorage.setItem("bag_content", bagContentData);
+     location.reload()
+
+      // console.log(header,content,selectedBag)
+})
+
+
+function getLocalBagData()
+{
+     let bags = localStorage.getItem("bags");
+     let bagsDataFromStorage = JSON.parse(bags);
+    //  console.log(bagsDataFromStorage)
+
+     let str = ""
+     let dropDown = ""
+     let deleteBags = ""
+
+     dropDown+=`<option selected>Select Bag</option>`
+      for (let i = 0; i<bagsDataFromStorage.length; i++) {
+        str +=`
+        <button class="nav-link allBags" id="v-pills-${bagsDataFromStorage[i].bag_id}-tab" data-bs-toggle="pill" data-bs-target="#v-pills-${bagsDataFromStorage[i].bag_id}" type="button" role="tab" aria-controls="v-pills-${bagsDataFromStorage[i].bag_id}" aria-selected="true">${bagsDataFromStorage[i].bag_name}</button>
+      `
+      dropDown +=`
+      <option value="${bagsDataFromStorage[i].bag_id}">${bagsDataFromStorage[i].bag_name}</option>   
+      ` 
+
+      deleteBags +=`
+      <button type="button" class="btn btn-outline-danger" deleteBagId="${bagsDataFromStorage[i].bag_id}" onclick="deleteBag(this)">${bagsDataFromStorage[i].bag_name}</button>
+      `
+}
+
+document.getElementById('v-pills-tab').innerHTML=str
+document.getElementById('selectBag').innerHTML=dropDown
+document.getElementById('deleteBags').innerHTML=deleteBags
+
+}
+
+
+function getLocalBagContentData(){
+
+  let bags = localStorage.getItem("bags");
+     let bagsDataFromStorage = JSON.parse(bags);
+
+     console.log(bagsDataFromStorage)
+
+  let bag_content = localStorage.getItem("bag_content");
+     let bagsContentDataFromStorage = JSON.parse(bag_content);
+     console.log(bagsContentDataFromStorage)
+
+    //  bagsContentDataFromStorage[0] =  {content_id: '154565', header: 'BCG', content: 'Our first biggest client', bag_id: '984767'} 
+
+let str = ''
+
+        for(i=0;i<bagsDataFromStorage.length;i++)
+        {
+          str+=`<div class="tab-pane fade show" id="v-pills-${bagsDataFromStorage[i].bag_id}" role="tabpanel" aria-labelledby="v-pills-${bagsDataFromStorage[i].bag_id}-tab">`
+             for(j=0;j<bagsContentDataFromStorage.length;j++)
+             {
+                  if(bagsDataFromStorage[i].bag_id==bagsContentDataFromStorage[j].bag_id)
+                  {
+                       str += `
+                       
+                        <div class="card" id="card_${bagsContentDataFromStorage[j].content_id}">
+                          <div class="card-header" headerId="${bagsContentDataFromStorage[j].content_id}" id="header_${bagsContentDataFromStorage[j].content_id}" ondblclick="editHeader(this)">
+                            ${bagsContentDataFromStorage[j].header}
+                          </div>
+                          <div class="card-body" contentId="${bagsContentDataFromStorage[j].content_id}" id="content_${bagsContentDataFromStorage[j].content_id}" ondblclick="editContent(this)">
+                            <pre>${bagsContentDataFromStorage[j].content}</pre>
+                          </div>
+                          <button type="button" class="btn btn-outline-danger" onclick="deleteCard(this)" deleteCardId="${bagsContentDataFromStorage[j].content_id}" header="${bagsContentDataFromStorage[j].header}">Delete Card</button>
+                        </div>
+                       <br>
+                       <br>
+
+                       `
+                  }
+             }
+            str+=`</div>` 
+        }
+
+        document.getElementById('v-pills-tabContent').innerHTML = str
+}
+
+getLocalBagData()
+
+getLocalBagContentData()
+
+
+function deleteBag(element)
+{
+  let bag_name = element.innerText
+  let flag = confirm(`If you delete the bag, all cards in the bag will get deleted are you sure you want to delete bag "${bag_name}"`) 
+
+  if(flag==false)
+  {
+      return 
+  }
+
+
+  let deleteBagId = element.getAttribute('deleteBagId')
+
+  let bags = localStorage.getItem("bags");
+  let bagsDataFromStorage = JSON.parse(bags);   
+  newBagArray = []
+
+for(i=0;i<bagsDataFromStorage.length;i++)
+  {
+      if(bagsDataFromStorage[i].bag_id!=deleteBagId)
+      {
+        newBagArray.push(bagsDataFromStorage[i])
+      }
+  }
+  bagsDataFromStorage = newBagArray
+  bagData = JSON.stringify(bagsDataFromStorage)
+  localStorage.setItem("bags", bagData);
+
+
+
+  let bag_content = localStorage.getItem("bag_content");
+
+    let bagsContentDataFromStorage = JSON.parse(bag_content);
+
+    newContentArray = []
+
+    for(i=0;i<bagsContentDataFromStorage.length;i++)
+      {
+          if(bagsContentDataFromStorage[i].bag_id!=deleteBagId)
+          {
+            newContentArray.push(bagsContentDataFromStorage[i])
+          }
+      }
+
+      bagsContentDataFromStorage = newContentArray
+      bagContentData = JSON.stringify(bagsContentDataFromStorage)
+      localStorage.setItem("bag_content", bagContentData);
+      location.reload()
+
+}
+
+
+
+function deleteCard(element)
+{
+    let header = element.getAttribute('header')
+    let flag = confirm(`Are you sure you want to delete ${header}`) 
+
+    if(flag==false)
+    {
+       return 
+    }
+    let deleteCardId = element.getAttribute('deleteCardId')
+    let bag_content = localStorage.getItem("bag_content");
+
+    let bagsContentDataFromStorage = JSON.parse(bag_content);
+
+    newArray = []
+
+    for(i=0;i<bagsContentDataFromStorage.length;i++)
+      {
+          if(bagsContentDataFromStorage[i].content_id!=deleteCardId)
+          {
+            newArray.push(bagsContentDataFromStorage[i])
+          }
+      }
+
+      bagsContentDataFromStorage = newArray
+      bagContentData = JSON.stringify(bagsContentDataFromStorage)
+      localStorage.setItem("bag_content", bagContentData);
+      location.reload()
+}
+
+
+
+function editHeader(element)
+{
+
+     let headerContent = element.innerText
+
+     let headerId = element.getAttribute('headerId')
+
+    //  console.log(headerId)
+
+    element.innerHTML=`<div class="mb-3">
+  <input type="email" class="form-control" id="edit_header_${headerId}" value="${headerContent}">
+  <br>
+  <button onclick="saveHeaderContent(this)" headerId="${headerId}">Save</button>
+</div>`
+
+
+
+}
+
+function saveHeaderContent(element)
+{
+       headerId = element.getAttribute('headerId')
+
+       headerIdForValue = "edit_header_"+headerId
+       headerNewContent = document.getElementById(headerIdForValue).value
+       
+       
+      let bag_content = localStorage.getItem("bag_content");
+      let bagsContentDataFromStorage = JSON.parse(bag_content);
+  
+
+      for(i=0;i<bagsContentDataFromStorage.length;i++)
+      {
+          if(bagsContentDataFromStorage[i].content_id===headerId)
+          {
+                bagsContentDataFromStorage[i].header = headerNewContent
+          }
+      }
+
+      bagContentData = JSON.stringify(bagsContentDataFromStorage)
+      localStorage.setItem("bag_content", bagContentData);
+
+
+      // location.reload()
+
+      let headerIdJS = 'header_'+headerId
+      document.getElementById(headerIdJS).innerHTML=headerNewContent
+      
+      // let headerIdJQuery = '#header_'+headerId
+      // $(headerIdJQuery).load(window.location.href + " headerIdJQuery" );
+
+      
+
+      
+}
+
+
+function editContent(element)
+{
+  let contentText = element.innerText
+  //  console.log(contentText)
+   let contentId = element.getAttribute('contentId')
+
+
+   element.innerHTML=`<div class="mb-3">
+  <textarea class="form-control" id="edit_content_${contentId}" rows="5">${contentText}</textarea>
+  <br>
+  <button onclick="saveContentText(this)" contentId="${contentId}">Save</button>
+</div>`
+
+}
+
+function saveContentText(element)
+{
+       contentId = element.getAttribute('contentId')
+
+       contentIdForValue = "edit_content_"+contentId
+       newContent = document.getElementById(contentIdForValue).value
+
+      //  console.log(newContent)
+
+      let bag_content = localStorage.getItem("bag_content");
+      let bagsContentDataFromStorage = JSON.parse(bag_content);
+
+      for(i=0;i<bagsContentDataFromStorage.length;i++)
+      {
+          if(bagsContentDataFromStorage[i].content_id===contentId)
+          {
+                bagsContentDataFromStorage[i].content = newContent
+          }
+      }
+
+      bagContentData = JSON.stringify(bagsContentDataFromStorage)
+      localStorage.setItem("bag_content", bagContentData);
+
+      let contentIdJS = 'content_'+contentId
+      newContent = `<pre>${newContent}</pre>`
+      document.getElementById(contentIdJS).innerHTML = newContent
+
+      // location.reload()
+}
+
+
+// window.onload()
+
+
+function firstFunction()
+{
+    elements = document.getElementsByClassName('allBags')
+    elementId = "#"+elements[0].getAttribute('id')
+    $(elementId).trigger("click");
+}
+
+
+
+
+// window.setInterval(function(){
+//   $("#main_message_div").load(window.location.href + " #main_message_div" );
+   
+//      getOTP()
+//   }, 3000);
+
+
+//   function getOTP()
+//   {
+//      console.log("getOTP")
+//     let str = Date.now().toString()
+//   let otp = str.slice(str.length-6, str.length);
+
+//   }
+
+//   getOTP()
+
+
+</script>
+
+
+</html> 
